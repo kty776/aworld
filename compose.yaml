@@ -1,0 +1,46 @@
+# release/mnt -> docker compose up -d
+# local -> docker compose --env-file .env.dev -f compose.yaml -f compose-dev.yaml up -d
+
+services:
+  apache:
+    build:
+      context: ${DOCKER_BUILD_PATH}/apache/
+      args:
+        APACHE_VERSION: ${APACHE_VERSION}
+    depends_on:
+      - php
+    networks:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./htdocs/:/var/www/html/
+      - ${DOCKER_BUILD_PATH}/apache/apache.conf:/usr/local/apache2/conf/apache.conf
+    container_name: "web"
+
+  php:
+    build:
+      context: ${DOCKER_BUILD_PATH}/${PHP_RELEASE_PATH}/
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+    networks:
+      - backend
+    ports:
+      - "9000:9000"
+    container_name: "php-release"
+
+  php-mnt:
+    build:
+      context: ${DOCKER_BUILD_PATH}/${PHP_MNT_PATH}/
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+    networks:
+      - backend
+    ports:
+      - "9010:9000"
+    container_name: "php-mnt"
+
+networks:
+  backend:
+  frontend:

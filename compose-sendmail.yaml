@@ -1,0 +1,34 @@
+services:
+  mailserver:
+    image: ghcr.io/mailserver/docker-mailserver:${SENDMAIL_VERSION}
+    hostname: ${HOST_NAME}
+    env_file: ./sendmail/mailserver.env
+    # More information about the mail-server ports:
+    # https://docker-mailserver.github.io/docker-mailserver/edge/config/security/understanding-the-ports/
+    # To avoid conflicts with yaml base-60 float, DO NOT remove the quotation marks.
+    ports:
+      - "25:25"    # SMTP  (explicit TLS => STARTTLS)
+      - "143:143"  # IMAP4 (explicit TLS => STARTTLS)
+      - "465:465"  # ESMTP (implicit TLS)
+      - "587:587"  # ESMTP (explicit TLS => STARTTLS)
+      - "993:993"  # IMAP4 (implicit TLS)
+    volumes:
+      - ./docker-data/dms/mail-data/:/var/mail/
+      - ./docker-data/dms/mail-state/:/var/mail-state/
+      - ./docker-data/dms/mail-logs/:/var/log/mail/
+      - ./docker-data/dms/config/:/tmp/docker-mailserver/
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/letsencrypt:/etc/letsencrypt
+    restart: always
+    stop_grace_period: 1m
+    cap_add:
+      - NET_ADMIN
+      - SYS_PTRACE
+    networks:
+      - sendmail
+    container_name: "sendmail"
+    profiles:
+      - sendmail
+
+networks:
+  sendmail:

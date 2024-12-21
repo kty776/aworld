@@ -1,0 +1,34 @@
+services:
+  apache:
+    image: ty776/aworld:web-apache-demo
+    depends_on:
+      - php
+      - php-mnt
+    networks:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+    volumes:
+      - /var/www/htdocs/:/var/www/html/
+    container_name: "web"
+
+  php:
+    image: ty776/aworld:php-release-demo
+    networks:
+      - backend
+    ports:
+      - "9000:9000"
+    container_name: "php-release"
+
+  php-mnt:
+    image: ty776/aworld:php-mnt-demo
+    networks:
+      - backend
+    ports:
+      - "9010:9000"
+    container_name: "php-mnt"
+
+networks:
+  backend:
+  frontend:
