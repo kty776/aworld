@@ -1,8 +1,11 @@
+# release/mnt -> docker compose -f compose-sendmail.yaml up -d
+# local -> docker compose --env-file .env.dev -f -f compose-sendmail.yaml up -d
+
 services:
   mailserver:
     image: ghcr.io/mailserver/docker-mailserver:${SENDMAIL_VERSION}
     hostname: ${HOST_NAME}
-    env_file: ./sendmail/mailserver.env
+    env_file: ${DOCKER_BUILD_PATH}/sendmail/mailserver.env
     # More information about the mail-server ports:
     # https://docker-mailserver.github.io/docker-mailserver/edge/config/security/understanding-the-ports/
     # To avoid conflicts with yaml base-60 float, DO NOT remove the quotation marks.
