@@ -1,5 +1,5 @@
 # release/mnt -> docker compose -f compose-sendmail.yaml up -d
-# local -> docker compose --env-file .env.dev -f -f compose-sendmail.yaml up -d
+# local -> docker compose --env-file .env.dev -f compose-sendmail.yaml up -d
 
 services:
   mailserver:
@@ -30,8 +30,6 @@ services:
     networks:
       - sendmail
     container_name: "sendmail"
-    profiles:
-      - sendmail
 
 networks:
   sendmail:
